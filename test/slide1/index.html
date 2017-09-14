@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.slider-pro {
+    position: relative;
+    margin: 0 auto;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+.sp-slide {
+	position: absolute;
+}
+</style>
+<script src="jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" href="slider-pro/dist/css/slider-pro.min.css"/>
+<script src="slider-pro/dist/js/jquery.sliderPro.min.js"></script>
+<script>
+var $ = jQuery;
+	$( document ).ready(function($) {
+	  	$('#wide').sliderPro({
+			width: 400,//横幅
+			height: 500,
+			arrows: true,//左右の矢印
+			buttons: false,//ナビゲーションボタンを出す
+			slideDistance:0,//スライド同士の距離
+			visibleSize: '100%',//前後のスライドを表示
+			thumbnailWidth: 100,//サムネイルの横幅
+			thumbnailHeight: 60,//サムネイルの縦幅
+			slideDistance:0,//スライド同士の距離
+			breakpoints: {
+			  480: {//表示方法を変えるサイズ
+				thumbnailWidth: 50,
+				thumbnailHeight: 30
+			  }
+			}
+	  	});
+	});
+</script>
+</head>
+<body>
+<div id="wide" class="slider-pro">
+	<div class="sp-slides">
+    	<div class="sp-slide"><img class="" src="img/anh1.png" style="width:300px;height:300px" /><p>title 1</p></div>
+        <div class="sp-slide"><img class="" src="img/anh2.png" style="width:300px;height:300px" /><p>title 2</p></div>
+        <div class="sp-slide"><img class="" src="img/anh3.png" style="width:300px;height:300px" /><p>title 3</p></div>
+		<div class="sp-slide"><img class="" src="img/anh4.png" style="width:300px;height:300px" /><p>title 4</p></div>
+        <div class="sp-slide"><img class="" src="img/anh5.png" style="width:300px;height:300px" /><p>title 5</p></div>
+        <div class="sp-slide"><img class="" src="img/anh6.png" style="width:300px;height:300px" /><p>title 6</p></div>
+		<div class="sp-slide"><img class="" src="img/anh7.png" style="width:300px;height:300px" /><p>title 7</p></div>
+  	</div>
+</div>
+</body>
+</html>

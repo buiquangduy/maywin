@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="bt/jquery.min.js"></script>
+<link rel="stylesheet" href="bt/bootstrap.min.css" />
+<link rel="stylesheet" href="bt/bloc.css" />
+<style>
+
+</style>
+<script src="bt/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(function() {
+    var firstview_list = {
+                                    
+"fv_present201707p-min.png" : ["http://www.kurashikisilk.jp/blog/2017/07/present201707/","絹5本指靴下プレゼントキャンペーン"],
+"fv_natsuset2017_2-min.png" : ["http://www.kurashikisilk.jp/products/detail.php?product_id=318","夏からはじめる冷えとりセット"],
+"fv_babyinnner-min.png" : ["http://www.kurashikisilk.jp/products/list.php?transactionid=cf8d3b63af5c3cdb42b538d862384e9f06aa1fdf&mode=search&name=%E7%BE%BD%E8%A1%A3+%E3%83%99%E3%83%93%E3%83%BC","赤ちゃん/ベビー用肌着"],
+"fv_hadagi2017-min.jpg" : ["#","ascsgs"],                       
+        "eof" : ""
+    };
+
+    // EOFを削除
+    delete firstview_list["eof"];
+
+    var firstview_action_timer;
+    var firstview_action_span = 4000;
+    var touch = 0;
+    var tap = 0;
+    var tap_event_timer;
+
+    if(Object.keys(firstview_list).length > 0){
+        var container = document.createElement("div");
+        $(container).attr("id", "firstview_container").addClass("clearfix alpha");
+
+        var wrapper = document.createElement("div");
+        $(wrapper).attr("id", "firstview_wrapper").addClass("clearfix").appendTo(container);
+
+        var inner = document.createElement("ul");
+        $(inner).attr("id", "firstview").addClass("clearfix").appendTo(wrapper);
+
+        var filter_left = document.createElement("div");
+        $(filter_left).attr("id", "firstview_filter_left").addClass("firstview_filter").appendTo(wrapper);
+
+        var filter_right = document.createElement("div");
+        $(filter_right).attr("id", "firstview_filter_right").addClass("firstview_filter").appendTo(wrapper);
+
+        var arrow_left = document.createElement("a");
+        $(arrow_left).attr("id", "firstview_arrow_left").addClass("firstview_arrow remove").text("").appendTo(wrapper);
+
+        var arrow_right = document.createElement("a");
+        $(arrow_right).attr("id", "firstview_arrow_right").addClass("firstview_arrow remove").text("").appendTo(wrapper);
+
+        var controll = document.createElement("ul");
+        $(controll).attr("id", "firstview_controller").addClass("clearfix").appendTo(container);
+
+        var n = 0;
+        var h = Object.keys(firstview_list).length - 1;
+        $.each(firstview_list, function(k, v){
+
+            var item = document.createElement("li");
+            if(n < h){
+                $(item).attr("id", 'fv-' + n).appendTo(inner);
+            }else{
+                $(item).attr("id", 'fv-' + n).prependTo(inner);
+            }
+
+            var anchor = document.createElement("a");
+            $(anchor).attr("href", v[0]).appendTo(item);
+
+            var img = document.createElement("img");
+            $(img).attr({src: "img/common/" + k, alt: v[1]}).addClass("img-responsive aligncenter").appendTo(anchor); 
+
+            var controll_item = document.createElement("li");
+            $(controll_item).attr("id", 'ct-' + n).appendTo(controll);
+
+            var controll_anchor = document.createElement("a");
+            $(controll_anchor).addClass("remove").text('').appendTo(controll_item);
+
+            if(n == 0){
+                $(item).addClass("active");
+                $(controll_item).addClass("active");
+            }
+
+            n++;
+        });
+
+
+        $(container).insertAfter("#header_wrap");
+        
+        firstview_resize();
+        firstview_action_timer = setTimeout(firstview_action, firstview_action_span);
+
+        $(window, document, 'html, body').resize(function(){
+            firstview_resize();
+            firstview_action_timer = setTimeout(firstview_action, firstview_action_span);
+        });
+
+        $("ul#firstview").mouseover(function(){
+            clearTimeout(firstview_action_timer);
+            touch = 1;
+        }).mouseout(function(){
+            if(tap != 1){
+                touch = 0;
+                firstview_action_timer = setTimeout(firstview_action, firstview_action_span * 0.5);
+            }
+        });
+
+/*
+        var touchX = 0;
+        var nextX = 0;
+        $("ul#firstview").bind({
+            // フリック開始時
+            "touchstart": function(e) {
+                clearTimeout(firstview_action_timer);
+                clearTimeout(tap_event_timer);
+                touchX = event.changedTouches[0].pageX;
+            },
+            // フリック中
+            "touchmove": function(e) {
+                clearTimeout(firstview_action_timer);
+                clearTimeout(tap_event_timer);
+                e.preventDefault();
+                nextX = event.changedTouches[0].pageX;
+            },
+            // フリック終了
+            "touchend": function(e) {
+                clearTimeout(firstview_action_timer);
+                clearTimeout(tap_event_timer);
+                tap = 1;
+                if(touchX != nextX){
+                    _action((touchX > nextX ? 'right' : 'left'));
+                }
+            }
+        });
+*/
+
+        $("a.firstview_arrow").click(function(){
+            touch = 0;
+            if(!$(this).hasClass("untouch")){
+                _action(this.id.split("_")[2]);
+            }
+        });
+        
+        $("ul#firstview_controller li a").click(function(){
+            touch = 0;
+            if(!$(this).hasClass("active")){
+                firtview_direct($(this).parent().attr("id").split("-")[1]);
+            }
+        });
+    }
+    
+    function firstview_resize(){
+        clearTimeout(firstview_action_timer);
+        var w = $("#firstview_wrapper").innerWidth();
+        $("ul#firstview li").each(function(){
+            $(this).css("width", w + 'px');
+        });
+        var all_w = w * $("ul#firstview li").length;
+        $("ul#firstview").css({"width": all_w + 'px', "margin-left": (0 - w) + 'px'});
+    }
+
+    function firstview_action(){
+        if(touch == 0){
+            _action("auto");
+        }
+    }
+
+    function _action(target){
+        clearTimeout(firstview_action_timer);
+        var ckpos = $("#firstview_wrapper").offset().top + $("#firstview_wrapper").innerHeight();
+        if($(window, document, "html, body").scrollTop() <= ckpos){
+            var w = $("#firstview_wrapper").innerWidth();
+            var next = 0 - w * 2;
+            $("a.firstview_arrow").each(function(){
+                $(this).addClass("untouch");
+            });
+            if(target == "left"){
+                $("ul#firstview li:last-child").prependTo("ul#firstview");
+                $("ul#firstview").css("margin-left", next + 'px');
+                next = 0 - w;
+            }
+            $("ul#firstview").stop().animate({"margin-left": next + 'px'}, "slow", function(){
+                if(target != "left"){
+                    $("ul#firstview li:first-child").appendTo("ul#firstview");
+                }
+                $("ul#firstview li.active").removeClass("active");
+                $("ul#firstview li:nth-child(2)").addClass("active");
+                $("ul#firstview_controller li.active").removeClass("active");
+                $("ul#firstview_controller li#ct-" + $("ul#firstview li.active").attr("id").split("-")[1]).addClass("active");
+                if(target != "left"){
+                    $("ul#firstview").css("margin-left", (0 - w) + 'px');
+                }
+                $("a.firstview_arrow").each(function(){
+                    $(this).removeClass("untouch");
+                });
+                if(tap == 1){
+                    tap_event_timer = setTimeout(function(){
+                        tap = 0;
+                        touch = 0;
+                    }, firstview_action_span * 0.5);
+                }
+                firstview_action_timer = setTimeout(function(){
+                    if(tap == 0){
+                        firstview_action();
+                    }
+                }, firstview_action_span);
+            });
+        }else{
+            firstview_action_timer = setTimeout(firstview_action, firstview_action_span);
+        }
+    }
+
+    function firtview_direct(n){
+        clearTimeout(firstview_action_timer);
+        $("ul#firstview").stop();
+        $("a.firstview_arrow").each(function(){
+            $(this).addClass("untouch");
+        });
+        var w = $("#firstview_wrapper").innerWidth();
+        var ml = parseInt($("ul#firstview").css("margin-left").replace(/px/, ""));
+        var next = 0 - w;
+
+        if($("ul#firstview li#fv-" + n).nextAll(".active").length > 0){
+            if($("ul#firstview li#fv-" + n).prevAll().length < 1){
+                $("ul#firstview li:last-child").prependTo("ul#firstview");
+                $("ul#firstview").css("margin-left", (ml - w) + 'px');
+            }
+        }else{
+            if($("ul#firstview li#fv-" + n).nextAll().length < 1){
+                var dammy = $("ul#firstview li:first-child").clone();
+                $("ul#firstview li:first-child").appendTo("ul#firstview");
+                dammy.addClass("dammy").prependTo("ul#firstview");
+                //$("ul#firstview").css("margin-left", (ml + w) + 'px');
+            }
+            next = 0 - w * $("ul#firstview li#fv-" + n).prevAll().length;
+        }
+        $("ul#firstview").animate({"margin-left": next + 'px'}, "slow", function(){
+            $("ul#firstview li.active").removeClass("active");
+            $("ul#firstview li#fv-" + n).addClass("active");
+            $("ul#firstview li.dammy").remove();
+            if($("ul#firstview li#fv-" + n).prevAll().length > 1){
+                $("ul#firstview li#fv-" + n).prev().prevAll().each(function(){
+                    $(this).appendTo("ul#firstview");
+                });
+                $("ul#firstview").css("margin-left", (0 - w) + 'px');
+            }
+            $("ul#firstview_controller li.active").removeClass("active");
+            $("ul#firstview_controller li#ct-" + n).addClass("active");
+            $("a.firstview_arrow").each(function(){
+                $(this).removeClass("untouch");
+            });
+            firstview_action_timer = setTimeout(firstview_action, firstview_action_span);
+        });
+    }
+});
+
+</script>
+
+</head>
+<body>
+<div id="header_wrap"></div>
+<div id="sp_firstview" class="visible-xs">
+<a href="http://www.kurashikisilk.jp/products/detail.php?product_id=318">
+<img src="http://www.kurashikisilk.jp/user_data/firstview_images/fv_natsuset2017_2-min.png" alt="夏からはじめる冷えとりセット" title="夏からはじめる冷えとりセット"></a></div>
+</body>
+</html>

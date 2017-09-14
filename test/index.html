@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html, body{
+  background: #102131;
+}
+.slider{
+  width:800px;
+  margin:20px auto;
+  text-align: center;
+  padding:20px;
+  color:white;
+  .parent-slide{padding:15px;}
+  img{display: block;margin:auto;}
+}
+.slide {
+	float: left;
+}
+</style>
+<script src="jquery-3.2.1.min.js"></script>
+<script src="bxslider.js"></script>
+<script>
+$(document).ready(function(){
+$('.bxslider').bxSlider({
+  minSlides: 4,
+  maxSlides: 4,
+  slideWidth: 170,
+  slideMargin: 10,
+  ticker: true,
+  speed: 6000
+});
+});
+
+</script>
+</head>
+<body>
+
+<ul class="bxslider">
+  <li>
+    <img src="http://fillmurray.com/300/300" alt=""  />
+  </li>
+  <li>
+    <img src="http://fillmurray.com/300/300" alt=""  />
+  </li>
+  <li>
+    <img src="http://fillmurray.com/300/300" alt=""  />
+  </li>
+  <li>
+    <img src="http://fillmurray.com/300/300" alt=""  />
+  </li>
+  <li>
+    <img src="http://fillmurray.com/300/300" alt=""  />
+  </li>
+  <li>
+    <img src="http://fillmurray.com/300/300" alt=""  />
+  </li>
+</ul>
+</body>
+</html>
